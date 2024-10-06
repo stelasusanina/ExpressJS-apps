@@ -4,3 +4,10 @@ Request URL: /index.html, Duration: 10ms
 Request URL: /data.json, Duration: 1ms
 Request URL: /static/abc, Duration: 16ms
 Request URL: /, Duration: 16ms
+Request URL: /catsVsDogs.html, Duration: 33ms
+Request URL: /catsVsDogs.html, Duration: 36ms
+Request URL: /catsVsDogs.html, Duration: 20ms
+Request URL: /catsVsDogs.html, Duration: 4ms
+Request URL: /catsVsDogs.html, Duration: 5ms
+Request URL: /catsVsDogs.html, Duration: 4ms
+Request URL: /index.html, Duration: 36ms

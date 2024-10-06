@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "access-log": "^0.4.1",
     "cors": "^2.8.5",
     "express": "^4.21.0"
   },
