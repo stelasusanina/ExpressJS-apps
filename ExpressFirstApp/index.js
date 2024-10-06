@@ -2,7 +2,26 @@ const express = require('express');
 const staticRoutes = require('./routes/staticRoutes');
 const path = require('path');
 const cors = require('cors');
+const fs = require('fs');
 const app = express();
+
+//Middleware calculating the request duration and logs the info to a file
+app.use((req, res, next) => {
+  const start = Date.now();
+
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    const logMessage = `Request URL: ${req.url}, Duration: ${duration}ms\n`;
+
+    fs.appendFile('requestsDuration.txt', logMessage, (err) => {
+      if (err) {
+        throw err;
+      }
+    });
+  });
+
+  next();
+});
 
 const corsOptionsHTML = {
   origin: 'http://localhost:3000',

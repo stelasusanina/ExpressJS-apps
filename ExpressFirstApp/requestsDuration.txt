@@ -1,0 +1,6 @@
+Request URL: /, Duration: 14ms
+Request URL: /, Duration: 2ms
+Request URL: /index.html, Duration: 10ms
+Request URL: /data.json, Duration: 1ms
+Request URL: /static/abc, Duration: 16ms
+Request URL: /, Duration: 16ms
