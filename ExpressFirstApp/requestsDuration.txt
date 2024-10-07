@@ -11,3 +11,7 @@ Request URL: /catsVsDogs.html, Duration: 4ms
 Request URL: /catsVsDogs.html, Duration: 5ms
 Request URL: /catsVsDogs.html, Duration: 4ms
 Request URL: /index.html, Duration: 36ms
+Request URL: /index.html, Duration: 26ms
+Request URL: /index.html, Duration: 3ms
+Request URL: /index.html, Duration: 12ms
+Request URL: /, Duration: 17ms
