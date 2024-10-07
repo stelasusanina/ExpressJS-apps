@@ -3,7 +3,24 @@ const staticRoutes = require('./routes/staticRoutes');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
+const accessLog = require('access-log');
 const app = express();
+
+var format =
+  'url=":url" method=":method" statusCode=":statusCode" protocol=":protocol" ip=":ip"\n';
+
+// Middleware to log access details
+app.use((req, res, next) => {
+  accessLog(req, res, format, (log) => {
+    fs.appendFile('accessLog.txt', log, (err) => {
+      if (err) {
+        throw err;
+      }
+    });
+  });
+
+  next();
+});
 
 //Middleware calculating the request duration and logs the info to a file
 app.use((req, res, next) => {

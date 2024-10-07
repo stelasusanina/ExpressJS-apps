@@ -1,0 +1,2 @@
+url="/index.html" method="GET" statusCode="304" protocol="HTTP" ip="::1"
+url="/" method="GET" statusCode="200" protocol="HTTP" ip="::1"
