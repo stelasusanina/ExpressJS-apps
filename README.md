@@ -3,6 +3,7 @@ This project is a simple Express.js application that serves static files. The CO
 The application includes several endpoints:
 
 - The `GET /` returns a simple "Hi" message.
-- The `GET /static/index.html` endpoint serves an HTML file with appropriate CORS headers.
-- The `GET /static/data.json` endpoint serves a JSON file, also with CORS headers.
+- The `GET /static/index.html` endpoint serves an HTML file.
+- The `GET /static/catsVsDogs.html` endpoint serves an HTML file.
+- The `GET /static/data.json` endpoint serves a JSON file.
 - If an invalid endpoint is accessed, like `GET /abc`, the application responds with a 404 error and a custom error page.
