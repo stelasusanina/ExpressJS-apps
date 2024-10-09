@@ -4,7 +4,13 @@ const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
 const accessLog = require('access-log');
+const dotenv = require('dotenv');
+
+dotenv.config();
 const app = express();
+
+const staticDirectory = process.env.STATIC_DIRECTORY || 'public';
+const port = process.env.PORT;
 
 var format =
   'url=":url" method=":method" statusCode=":statusCode" protocol=":protocol" ip=":ip"\n';
@@ -68,7 +74,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/static', express.static('public'));
+app.use('/static', express.static(staticDirectory));
 app.use('/static', staticRoutes);
 
 app.get('/', (req, res) => {
@@ -81,6 +87,12 @@ app.use((req, res) => {
     .sendFile('public/notFoundErrorPage.html', { root: __dirname });
 });
 
-app.listen(3000);
+app.listen(port, (err) => {
+  if (err) {
+    console.log('This port is already being used!');
+  } else {
+    console.log(`Server is running on http://localhost:${port}`);
+  }
+});
 
 module.exports = app;

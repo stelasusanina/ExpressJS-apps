@@ -15,3 +15,6 @@ Request URL: /index.html, Duration: 26ms
 Request URL: /index.html, Duration: 3ms
 Request URL: /index.html, Duration: 12ms
 Request URL: /, Duration: 17ms
+Request URL: /, Duration: 37ms
+Request URL: /favicon.ico, Duration: 15ms
+Request URL: /index.html, Duration: 5ms
