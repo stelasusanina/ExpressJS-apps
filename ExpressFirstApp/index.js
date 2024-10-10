@@ -1,5 +1,4 @@
 const express = require('express');
-const staticRoutes = require('./routes/staticRoutes');
 const dotenv = require('dotenv');
 const accessLogger = require('./middleware/accessLog');
 const corsMiddleware = require('./middleware/maintainCors');
@@ -11,17 +10,12 @@ const app = express();
 const staticDirectory = process.env.STATIC_DIRECTORY || 'public';
 const port = process.env.PORT;
 
+app.use(express.static(staticDirectory));
+
 // Use middleware
 app.use(accessLogger);
 app.use(durationLogger);
 app.use(corsMiddleware);
-
-app.use('/static', express.static(staticDirectory));
-app.use('/static', staticRoutes);
-
-app.get('/', (req, res) => {
-  res.send('Hi');
-});
 
 app.use((req, res) => {
   res
