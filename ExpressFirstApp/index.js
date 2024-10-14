@@ -1,4 +1,5 @@
 const express = require('express');
+const app = express();
 const dotenv = require('dotenv');
 const accessLogger = require('./middleware/accessLog');
 const corsMiddleware = require('./middleware/maintainCors');
@@ -7,7 +8,6 @@ const bodyParser = require('body-parser');
 const todoRoutes = require('./routes/todo');
 
 dotenv.config();
-const app = express();
 
 const staticDirectory = process.env.STATIC_DIRECTORY || 'public';
 const port = process.env.PORT;

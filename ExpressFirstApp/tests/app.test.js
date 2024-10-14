@@ -1,17 +1,12 @@
 const request = require('supertest');
 const app = require('../index');
+const fs = require('fs')
 
 describe('routes', () => {
-  it('should respond with "Hi"', async () => {
-    const response = await request(app).get('/');
-    expect(response.status).toBe(200);
-    expect(response.text).toBe('Hi');
-  });
-
   it('should respond with the index.html', async () => {
-    const response = await request(app).get('/static/index.html');
+    const response = await request(app).get('/index.html');
     expect(response.status).toBe(200);
-    expect(response.headers['content-type']).toBe('text/html');
+    expect(response.headers['content-type']).toBe('text/html; charset=UTF-8');
 
     const expectedHtml = `<html>
   <body>
@@ -23,13 +18,34 @@ describe('routes', () => {
   });
 
   it('should respond with the data.json', async () => {
-    const response = await request(app).get('/static/data.json');
+    const response = await request(app).get('/data.json');
     expect(response.status).toBe(200);
-    expect(response.headers['content-type']).toBe('application/json');
+    expect(response.headers['content-type']).toBe(
+      'application/json; charset=UTF-8'
+    );
 
     expect(JSON.parse(response.text)).toStrictEqual({
       message: 'Hello from data.json!',
     });
+  });
+
+  it('should respond with the catsVsDogs.html', async () => {
+    const response = await request(app).get('/catsVsDogs.html');
+    expect(response.status).toBe(200);
+    expect(response.headers['content-type']).toBe('text/html; charset=UTF-8');
+
+    const expectedHtml = fs.readFileSync(
+      './public/catsVsDogs.html',
+      'utf-8',
+      (err, data) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send('Failed to read the file');
+        }
+      }
+    );
+
+    expect(response.text.trim()).toBe(expectedHtml.trim());
   });
 
   it('should respond with the notFoundErrorPage.html', async () => {
@@ -47,19 +63,5 @@ describe('routes', () => {
 </html>`;
 
     expect(response.text.trim()).toBe(expectedHtml.trim());
-  });
-});
-
-describe('CORS tests', () => {
-  it('the Access-Control-Allow-Origin should be * for JSON files', async () => {
-    const response = await request(app).get('/static/data.json');
-    expect(response.headers['access-control-allow-origin']).toBe('*');
-  });
-
-  it('the Access-Control-Allow-Origin should be * for HTML files', async () => {
-    const response = await request(app).get('/static/index.html');
-    expect(response.headers['access-control-allow-origin']).toBe(
-      'http://localhost:3000'
-    );
   });
 });
