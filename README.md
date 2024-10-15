@@ -1,9 +1,46 @@
-This project is a simple Express.js application that serves static files. The CORS settings provided allow requests from any origin for JSON files, while requests for HTML files are restricted to `http://localhost:3000`.
+## Description
 
-The application includes several endpoints:
+This project is a simple Express.js application that serves static files and provides functionality that allows users to create, read, update, and delete tasks.
 
-- The `GET /` returns a simple "Hi" message.
-- The `GET /static/index.html` endpoint serves an HTML file.
-- The `GET /static/catsVsDogs.html` endpoint serves an HTML file.
-- The `GET /static/data.json` endpoint serves a JSON file.
-- If an invalid endpoint is accessed, like `GET /abc`, the application responds with a 404 error and a custom error page.
+## Getting Started
+### Dependencies
+Before installing the program, ensure you have the following prerequisites:
+
+- **Node.js** (version 14 or higher)
+- **npm** (Node Package Manager, comes with Node.js)
+- **Express** (web framework for Node.js)
+- Operating System: **Windows 10**, **macOS**, or **Linux**
+
+### Installing
+To download and install the program, follow these steps:
+
+1. Clone the Repository:
+   
+```
+git clone https://github.com/yourusername/your-repo-name.git
+```
+  
+2. Navigate to the Project Directory:
+
+```
+cd your-repo-name
+```
+  
+3. Install Dependencies:
+
+```
+npm install
+```
+
+### Executing the Program
+To run the application, follow these steps:
+
+1. Start the Server:
+
+```
+node index.js
+```
+  
+2. Open Your Browser: 
+
+Go to `http://localhost:3000`
