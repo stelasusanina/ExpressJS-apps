@@ -2,6 +2,7 @@ const app = require('../index');
 const request = require('supertest');
 const fs = require('fs');
 const accessLogger = require('../middleware/accessLog');
+const HttpStatusCodes = require('../constants/httpStatusCodes');
 
 app.use(accessLogger);
 app.get('/index.html', (req, res) => {
@@ -32,7 +33,7 @@ describe('Access logger middleware', () => {
   it('should log access log in the right format', async () => {
     const response = await request(app).get('/index.html');
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(HttpStatusCodes.OK);
 
     fs.readFile(logFile, 'utf-8', (err, data) => {
       if (err) {

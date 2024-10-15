@@ -1,6 +1,7 @@
 const request = require('supertest');
 const fs = require('fs');
 const app = require('../index');
+const HttpStatusCodes = require('../constants/httpStatusCodes');
 
 const todoName = 'testTodo';
 const todoContent = {
@@ -32,13 +33,13 @@ afterEach((done) => {
 describe('GET /todo', () => {
   it('should get the content from the file', async () => {
     const response = await request(app).get('/todo').query({ todoName });
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(HttpStatusCodes.OK);
     expect(response.body).toStrictEqual(todoContent);
   });
 
   it('should return 400 if todoName is missing', async () => {
     const response = await request(app).get('/todo').query({});
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
     expect(response.text).toBe("Missing required field 'todoName'");
   });
 });
@@ -53,7 +54,7 @@ describe('POST /todo', () => {
       task: newTask.task,
     });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(HttpStatusCodes.OK);
 
     const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
     const todos = JSON.parse(fileData);
@@ -63,7 +64,7 @@ describe('POST /todo', () => {
 
   it('should return 400 if required fields are missing', async () => {
     const response = await request(app).post('/todo').send({});
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
     expect(response.text).toBe('Missing required fields');
   });
 
@@ -78,7 +79,7 @@ describe('POST /todo', () => {
       task: newTask.task,
     });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(HttpStatusCodes.OK);
 
     const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
     const todos = JSON.parse(fileData);
@@ -95,7 +96,7 @@ describe('DELETE /todo', () => {
       .delete('/todo')
       .send({ todoName, id: taskIdToDelete });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(HttpStatusCodes.OK);
 
     const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
     const todos = JSON.parse(fileData);
@@ -107,7 +108,7 @@ describe('DELETE /todo', () => {
 
   it('should return 400 if required fields are missing', async () => {
     const response = await request(app).delete('/todo').send({});
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
     expect(response.text).toBe('Missing required fields');
   });
 });

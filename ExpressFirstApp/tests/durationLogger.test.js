@@ -2,10 +2,11 @@ const app = require('../index');
 const request = require('supertest');
 const fs = require('fs');
 const durationLogger = require('../middleware/requestDuration');
+const HttpStatusCodes = require('../constants/httpStatusCodes');
 
 app.use(durationLogger);
 app.get('/index.html', (req, res) => {
-  res.sendStatus(200);
+  res.sendStatus(HttpStatusCodes.OK);
 });
 
 describe('Duration logger middleware', () => {
@@ -32,7 +33,7 @@ describe('Duration logger middleware', () => {
   it('should log request duration in the right format', async () => {
     const response = await request(app).get('/index.html');
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(HttpStatusCodes.OK);
 
     fs.readFile(logFile, 'utf-8', (err, data) => {
       if (err) {

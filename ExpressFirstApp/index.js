@@ -6,6 +6,7 @@ const corsMiddleware = require('./middleware/maintainCors');
 const durationLogger = require('./middleware/requestDuration');
 const bodyParser = require('body-parser');
 const todoRoutes = require('./routes/todo');
+const HttpStatusCodes = require('./constants/httpStatusCodes');
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ app.use(todoRoutes);
 
 app.use((req, res) => {
   res
-    .status(404)
+    .status(HttpStatusCodes.NOT_FOUND)
     .sendFile('public/notFoundErrorPage.html', { root: __dirname });
 });
 

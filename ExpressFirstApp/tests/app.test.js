@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../index');
-const fs = require('fs')
+const fs = require('fs');
+const HttpStatusCodes = require('../constants/httpStatusCodes');
 
 describe('routes', () => {
   it('should respond with the index.html', async () => {
@@ -19,7 +20,7 @@ describe('routes', () => {
 
   it('should respond with the data.json', async () => {
     const response = await request(app).get('/data.json');
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(HttpStatusCodes.OK);
     expect(response.headers['content-type']).toBe(
       'application/json; charset=UTF-8'
     );
@@ -31,7 +32,7 @@ describe('routes', () => {
 
   it('should respond with the catsVsDogs.html', async () => {
     const response = await request(app).get('/catsVsDogs.html');
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(HttpStatusCodes.OK);
     expect(response.headers['content-type']).toBe('text/html; charset=UTF-8');
 
     const expectedHtml = fs.readFileSync(
@@ -40,7 +41,7 @@ describe('routes', () => {
       (err, data) => {
         if (err) {
           console.error(err);
-          return res.status(500).send('Failed to read the file');
+          return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send('Failed to read the file');
         }
       }
     );
@@ -50,7 +51,7 @@ describe('routes', () => {
 
   it('should respond with the notFoundErrorPage.html', async () => {
     const response = await request(app).get('/abc');
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
 
     const expectedHtml = `<!doctype html>
 <html lang="en">
