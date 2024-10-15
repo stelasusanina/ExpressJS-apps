@@ -1,14 +1,27 @@
 const express = require('express');
-const staticRoutes = require('./routes/staticRoutes');
 const app = express();
+const dotenv = require('dotenv');
+const accessLogger = require('./middleware/accessLog');
+const corsMiddleware = require('./middleware/maintainCors');
+const durationLogger = require('./middleware/requestDuration');
+const bodyParser = require('body-parser');
+const todoRoutes = require('./routes/todo');
 
-app.use('/static', express.static('public'));
-app.use('/static', staticRoutes);
+dotenv.config();
 
-app.get('/', (req, res) => {
-  res.set({ 'Content-Type': 'text/html' });
-  res.send('Hi');
-});
+const staticDirectory = process.env.STATIC_DIRECTORY || 'public';
+const port = process.env.PORT;
+
+app.use(express.static(staticDirectory));
+
+// Use middleware
+app.use(accessLogger);
+app.use(durationLogger);
+app.use(corsMiddleware);
+app.use(bodyParser.json());
+
+//Use todoRoutes
+app.use(todoRoutes);
 
 app.use((req, res) => {
   res
@@ -16,6 +29,12 @@ app.use((req, res) => {
     .sendFile('public/notFoundErrorPage.html', { root: __dirname });
 });
 
-app.listen(3000);
+app.listen(port, (err) => {
+  if (err) {
+    console.log('This port is already being used!');
+  } else {
+    console.log(`Server is running on http://localhost:${port}`);
+  }
+});
 
 module.exports = app;
