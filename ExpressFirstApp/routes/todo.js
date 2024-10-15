@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const HttpStatusCodes = require('../constants/httpStatusCodes');
 const router = express.Router();
 
 //Creating new todo files or appending to already created
@@ -13,7 +14,9 @@ router.post('/todo', (req, res) => {
   let todos = { tasks: [] };
 
   if (!todoName || !id || !task) {
-    return res.status(400).send('Missing required fields');
+    return res
+      .status(HttpStatusCodes.BAD_REQUEST)
+      .send('Missing required fields');
   }
 
   // Read the existing JSON file
@@ -23,7 +26,9 @@ router.post('/todo', (req, res) => {
         console.log('File does not exist, creating a new one.');
       } else {
         console.error(err);
-        return res.status(500).send('Failed to read the file');
+        return res
+          .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+          .send('Failed to read the file');
       }
     } else {
       todos = JSON.parse(data);
@@ -34,10 +39,12 @@ router.post('/todo', (req, res) => {
     fs.writeFile(`./todo/${todoName}.json`, JSON.stringify(todos), (err) => {
       if (err) {
         console.error(err);
-        return res.status(500).send('Failed to write to the file');
+        return res
+          .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+          .send('Failed to write to the file');
       }
 
-      res.sendStatus(200);
+      res.sendStatus(HttpStatusCodes.OK);
     });
   });
 });
@@ -47,7 +54,9 @@ router.get('/todo', (req, res) => {
   const { todoName } = req.query;
 
   if (!todoName) {
-    return res.status(400).send("Missing required field 'todoName'");
+    return res
+      .status(HttpStatusCodes.BAD_REQUEST)
+      .send("Missing required field 'todoName'");
   }
 
   fs.readFile(`./todo/${todoName}.json`, 'utf-8', (err, data) => {
@@ -69,13 +78,17 @@ router.delete('/todo', (req, res) => {
   let todos = { tasks: [] };
 
   if (!todoName || !id) {
-    return res.status(400).send('Missing required fields');
+    return res
+      .status(HttpStatusCodes.BAD_REQUEST)
+      .send('Missing required fields');
   }
 
   fs.readFile(`./todo/${todoName}.json`, 'utf-8', (err, data) => {
     if (err) {
       console.error(err);
-      return res.status(500).send('Failed to read the file');
+      return res
+        .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+        .send('Failed to read the file');
     } else {
       todos = JSON.parse(data);
     }
@@ -89,7 +102,7 @@ router.delete('/todo', (req, res) => {
           console.error(err);
         } else {
           return res
-            .status(200)
+            .status(HttpStatusCodes.NO_CONTENT)
             .send(
               `./todo/${todoName}.json was deleted because there are no tasks left`
             );
@@ -99,10 +112,12 @@ router.delete('/todo', (req, res) => {
       fs.writeFile(`./todo/${todoName}.json`, JSON.stringify(todos), (err) => {
         if (err) {
           console.error(err);
-          return res.status(500).send('Failed to write to the file');
+          return res
+            .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+            .send('Failed to write to the file');
         }
 
-        res.sendStatus(200);
+        res.sendStatus(HttpStatusCodes.OK);
       });
     }
   });
