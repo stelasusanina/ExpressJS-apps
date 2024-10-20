@@ -10,7 +10,7 @@ app.get('/index.html', (req, res) => {
 });
 
 describe('Access logger middleware', () => {
-  const logFile = './logs/accessLog-test.txt';
+  const logFile = './logs/accessLog.txt';
 
   beforeAll((done) => {
     fs.writeFile(logFile, '', (err) => {
