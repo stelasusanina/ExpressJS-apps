@@ -38,10 +38,12 @@ describe('routes', () => {
     const expectedHtml = fs.readFileSync(
       './public/catsVsDogs.html',
       'utf-8',
-      (err, data) => {
+      (err) => {
         if (err) {
           console.error(err);
-          return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send('Failed to read the file');
+          return response
+            .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+            .send('Failed to read the file');
         }
       }
     );

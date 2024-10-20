@@ -7,6 +7,7 @@ export default [
     files: ['**/*.js'],
     languageOptions: {
       sourceType: 'commonjs',
+      globals: globals.jest,
     },
   },
   {
@@ -20,8 +21,6 @@ export default [
       prettier, // Define the prettier plugin correctly
     },
     rules: {
-      'no-console': 'warn', // Warns about console.log statements
-      indent: ['error', 2], // Enforce 2-space indentation
       quotes: ['error', 'single'], // Enforce single quotes
       'prettier/prettier': 'error', // Treat Prettier issues as errors
     },
