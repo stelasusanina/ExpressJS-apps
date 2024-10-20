@@ -35,16 +35,15 @@ describe('Duration logger middleware', () => {
 
     expect(response.status).toBe(HttpStatusCodes.OK);
 
-    fs.readFile(logFile, 'utf-8', (err, data) => {
+    fs.promises.readFile(logFile, 'utf-8', (err, data) => {
       if (err) {
         console.error(err);
       }
       const logEntries = data.split('\n');
 
-      const logEntry = logEntries.find((entry) =>
-        entry.includes('/index.html')
-      );
-
+      const logEntry = logEntries[logEntries.length - 1];
+      
+      expect(logEntry).toBeDefined();
       expect(logEntry).toMatch(/Request URL: \/index.html, Duration: \d+ms/);
     });
   });
