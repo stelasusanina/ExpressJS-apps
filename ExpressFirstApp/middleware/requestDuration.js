@@ -1,7 +1,13 @@
 const fs = require('fs');
 
 //Middleware calculating the request duration and logs the info to a file
+
+const logDir = './logs';
+
 const durationLogger = (req, res, next) => {
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true }); 
+  }
   const start = Date.now();
 
   res.on('finish', () => {
