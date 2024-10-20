@@ -11,13 +11,16 @@ const HttpStatusCodes = require('./constants/httpStatusCodes');
 dotenv.config();
 
 const staticDirectory = process.env.STATIC_DIRECTORY || 'public';
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
-app.use(express.static(staticDirectory));
-
-// Use middleware
+// Use logging middleware
 app.use(accessLogger);
 app.use(durationLogger);
+
+//Serve static files
+app.use(express.static(staticDirectory));
+
+//Use other middleware
 app.use(corsMiddleware);
 app.use(bodyParser.json());
 

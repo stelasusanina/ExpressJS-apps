@@ -40,7 +40,7 @@ describe('GET /todo', () => {
   it('should return 400 if todoName is missing', async () => {
     const response = await request(app).get('/todo').query({});
     expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
-    expect(response.text).toBe("Missing required field 'todoName'");
+    expect(response.text).toBe('Missing required field "todoName"');
   });
 });
 

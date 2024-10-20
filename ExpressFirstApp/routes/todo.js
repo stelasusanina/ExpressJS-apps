@@ -56,7 +56,7 @@ router.get('/todo', (req, res) => {
   if (!todoName) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
-      .send("Missing required field 'todoName'");
+      .send('Missing required field "todoName"');
   }
 
   fs.readFile(`./todo/${todoName}.json`, 'utf-8', (err, data) => {
