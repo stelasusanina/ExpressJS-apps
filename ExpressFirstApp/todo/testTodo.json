@@ -1,6 +1,0 @@
-{
-  "tasks": [
-    { "id": "1", "task": "Test Task" },
-    { "id": "2", "task": "Second Test Task" }
-  ]
-}

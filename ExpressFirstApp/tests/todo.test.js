@@ -91,7 +91,6 @@ describe('DELETE /todo', () => {
   it('should delete a task by given todoName and id', async () => {
     const taskIdToDelete = '1';
 
-    console.log(todoContent);
     const response = await request(app)
       .delete('/todo')
       .send({ todoName, id: taskIdToDelete });

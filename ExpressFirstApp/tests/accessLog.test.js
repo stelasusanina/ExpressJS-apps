@@ -35,15 +35,13 @@ describe('Access logger middleware', () => {
 
     expect(response.status).toBe(HttpStatusCodes.OK);
 
-    fs.readFile(logFile, 'utf-8', (err, data) => {
+    fs.promises.readFile(logFile, 'utf-8', (err, data) => {
       if (err) {
         console.error(err);
       }
       const logEntries = data.split('\n');
 
-      const logEntry = logEntries.find((entry) =>
-        entry.includes('/index.html')
-      );
+      const logEntry = logEntries[logEntries.length - 1];
 
       expect(logEntry).toMatch(
         /url="\/index.html" method="GET" statusCode="200" protocol="HTTP\/1\.1" ip="::ffff:127\.0\.0\.1"/
