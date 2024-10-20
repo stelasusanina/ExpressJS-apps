@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../index');
-const fs = require('fs');
+const fs = require('fs').promises; 
 const HttpStatusCodes = require('../constants/httpStatusCodes');
 
 describe('routes', () => {
@@ -9,13 +9,8 @@ describe('routes', () => {
     expect(response.status).toBe(200);
     expect(response.headers['content-type']).toBe('text/html; charset=UTF-8');
 
-    const expectedHtml = `<html>
-  <body>
-    <h1>Hello from index.html</h1>
-  </body>
-</html>`;
-
-    expect(response.text.trim()).toBe(expectedHtml.trim());
+    const expectedContent = await fs.readFile('./public/index.html', 'utf-8');
+    expect(response.text.trim()).toBe(expectedContent.trim());
   });
 
   it('should respond with the data.json', async () => {
@@ -35,19 +30,7 @@ describe('routes', () => {
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(response.headers['content-type']).toBe('text/html; charset=UTF-8');
 
-    const expectedHtml = fs.readFileSync(
-      './public/catsVsDogs.html',
-      'utf-8',
-      (err) => {
-        if (err) {
-          console.error(err);
-          return response
-            .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-            .send('Failed to read the file');
-        }
-      }
-    );
-
+    const expectedHtml = await fs.readFile('./public/catsVsDogs.html', 'utf-8');
     expect(response.text.trim()).toBe(expectedHtml.trim());
   });
 
@@ -55,16 +38,8 @@ describe('routes', () => {
     const response = await request(app).get('/abc');
     expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
 
-    const expectedHtml = `<!doctype html>
-<html lang="en">
-  <body>
-    <div>
-      <h1><b>404</b></h1>
-      <p>Page not found</p>
-    </div>
-  </body>
-</html>`;
+    const expectedHtml = await fs.readFile('./public/notFoundErrorPage.html', 'utf-8');
 
-    expect(response.text.trim()).toBe(expectedHtml.trim());
+    expect(response.text.trim()).toEqual(expectedHtml.trim());
   });
 });
