@@ -6,7 +6,7 @@ const logDir = './logs';
 
 const durationLogger = (req, res, next) => {
   if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir, { recursive: true }); 
+    fs.mkdirSync(logDir, { recursive: true });
   }
   const start = Date.now();
 

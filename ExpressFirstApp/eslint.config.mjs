@@ -21,6 +21,13 @@ export default [
       prettier, // Define the prettier plugin correctly
     },
     rules: {
+      indent: [
+        'error',
+        2,
+        {
+          SwitchCase: 1, // Case clauses of switch statement to be indented one more level
+        },
+      ],
       quotes: ['error', 'single'], // Enforce single quotes
       'prettier/prettier': 'error', // Treat Prettier issues as errors
     },
