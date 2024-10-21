@@ -42,7 +42,7 @@ describe('Duration logger middleware', () => {
       const logEntries = data.split('\n');
 
       const logEntry = logEntries[logEntries.length - 1];
-      
+
       expect(logEntry).toBeDefined();
       expect(logEntry).toMatch(/Request URL: \/index.html, Duration: \d+ms/);
     });

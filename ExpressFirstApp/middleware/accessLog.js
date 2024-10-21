@@ -9,7 +9,7 @@ const logDir = './logs';
 
 const accessLogger = (req, res, next) => {
   if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir, { recursive: true }); 
+    fs.mkdirSync(logDir, { recursive: true });
   }
 
   accessLog(req, res, format, (log) => {

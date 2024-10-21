@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../index');
-const fs = require('fs').promises; 
+const fs = require('fs').promises;
 const HttpStatusCodes = require('../constants/httpStatusCodes');
 
 describe('routes', () => {
@@ -38,7 +38,10 @@ describe('routes', () => {
     const response = await request(app).get('/abc');
     expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
 
-    const expectedHtml = await fs.readFile('./public/notFoundErrorPage.html', 'utf-8');
+    const expectedHtml = await fs.readFile(
+      './public/notFoundErrorPage.html',
+      'utf-8'
+    );
 
     expect(response.text.trim()).toEqual(expectedHtml.trim());
   });
