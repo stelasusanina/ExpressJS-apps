@@ -28,7 +28,7 @@ router.post('/todo', (req, res) => {
         console.error(err);
         return res
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-          .send('Failed to read the file');
+          .send('Could not read the file content.');
       }
     } else {
       todos = JSON.parse(data);
@@ -62,6 +62,9 @@ router.get('/todo', (req, res) => {
   fs.readFile(`./todo/${todoName}.json`, 'utf-8', (err, data) => {
     if (err) {
       console.error(err.message);
+      return res
+        .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+        .send('Could not read the file content.');
     } else {
       console.log(`${todoName}: `);
       console.log(JSON.parse(data));
@@ -88,7 +91,7 @@ router.delete('/todo', (req, res) => {
       console.error(err);
       return res
         .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-        .send('Failed to read the file');
+        .send('Could not read the file content.');
     } else {
       todos = JSON.parse(data);
     }
@@ -100,6 +103,9 @@ router.delete('/todo', (req, res) => {
       fs.unlink(`./todo/${todoName}.json`, (err) => {
         if (err) {
           console.error(err);
+          return res
+            .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+            .send('Could not delete the file content.');
         } else {
           return res
             .status(HttpStatusCodes.NO_CONTENT)
