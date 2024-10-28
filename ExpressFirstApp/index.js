@@ -13,7 +13,7 @@ dotenv.config();
 const staticDirectory = process.env.STATIC_DIRECTORY || 'public';
 const port = process.env.PORT || 3000;
 
-// Use logging middleware
+//Use logging middleware
 app.use(accessLogger);
 app.use(durationLogger);
 
@@ -33,12 +33,21 @@ app.use((req, res) => {
     .sendFile('public/notFoundErrorPage.html', { root: __dirname });
 });
 
-app.listen(port, (err) => {
-  if (err) {
-    console.log('This port is already being used!');
-  } else {
+//Function to start the server
+const startServer = () => {
+  const server = app.listen(port, (err) => {
+    if (err) {
+      console.log('This port is already being used!');
+      return;
+    }
     console.log(`Server is running on http://localhost:${port}`);
-  }
-});
+  });
 
-module.exports = app;
+  return server;
+};
+
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = { app, startServer };

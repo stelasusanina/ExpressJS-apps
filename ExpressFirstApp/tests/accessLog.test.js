@@ -1,18 +1,14 @@
-const app = require('../index');
+const { app, startServer } = require('../index');
 const request = require('supertest');
 const fs = require('fs');
-const accessLogger = require('../middleware/accessLog');
 const HttpStatusCodes = require('../constants/httpStatusCodes');
 
-app.use(accessLogger);
-app.get('/index.html', (req, res) => {
-  res.sendStatus(200);
-});
+const logFile = './logs/accessLog.txt';
+let server;
 
 describe('Access logger middleware', () => {
-  const logFile = './logs/accessLog.txt';
-
   beforeAll((done) => {
+    server = startServer();
     fs.writeFile(logFile, '', (err) => {
       if (err) {
         console.log(err);
@@ -22,11 +18,13 @@ describe('Access logger middleware', () => {
   });
 
   afterAll((done) => {
-    fs.unlink(logFile, (err) => {
-      if (err) {
-        console.error(err);
-      }
-      done();
+    server.close(() => {
+      fs.unlink(logFile, (err) => {
+        if (err) {
+          console.error(err);
+        }
+        done();
+      });
     });
   });
 
@@ -35,17 +33,13 @@ describe('Access logger middleware', () => {
 
     expect(response.status).toBe(HttpStatusCodes.OK);
 
-    fs.promises.readFile(logFile, 'utf-8', (err, data) => {
-      if (err) {
-        console.error(err);
-      }
-      const logEntries = data.split('\n');
+    const data = await fs.promises.readFile(logFile, 'utf-8');
+    const logEntries = data.split('\n');
 
-      const logEntry = logEntries[logEntries.length - 1];
+    const logEntry = logEntries[logEntries.length - 2];
 
-      expect(logEntry).toMatch(
-        /url="\/index.html" method="GET" statusCode="200" protocol="HTTP\/1\.1" ip="::ffff:127\.0\.0\.1"/
-      );
-    });
+    expect(logEntry).toMatch(
+      'url="/index.html" method="GET" statusCode="200" protocol="HTTP" ip="::ffff:127.0.0.1"'
+    );
   });
 });
