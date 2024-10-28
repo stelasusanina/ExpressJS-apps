@@ -1,7 +1,18 @@
 const request = require('supertest');
 const fs = require('fs');
-const app = require('../index');
+const { app, startServer } = require('../index');
 const HttpStatusCodes = require('../constants/httpStatusCodes');
+
+let server;
+
+beforeAll((done) => {
+  server = startServer();
+  done();
+});
+
+afterAll((done) => {
+  server.close(done);
+});
 
 const todoName = 'testTodo';
 const todoContent = {

@@ -1,5 +1,16 @@
 const request = require('supertest');
-const app = require('../index');
+const { app, startServer } = require('../index');
+
+let server;
+
+beforeAll((done) => {
+  server = startServer();
+  done();
+});
+
+afterAll((done) => {
+  server.close(done);
+});
 
 describe('CORS tests', () => {
   it('the Access-Control-Allow-Origin should be * for JSON files', async () => {

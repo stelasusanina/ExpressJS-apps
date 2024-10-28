@@ -1,7 +1,18 @@
 const request = require('supertest');
-const app = require('../index');
+const { app, startServer } = require('../index');
 const fs = require('fs').promises;
 const HttpStatusCodes = require('../constants/httpStatusCodes');
+
+let server;
+
+beforeAll((done) => {
+  server = startServer();
+  done();
+});
+
+afterAll((done) => {
+  server.close(done);
+});
 
 describe('routes', () => {
   it('should respond with the index.html', async () => {

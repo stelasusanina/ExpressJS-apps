@@ -1,18 +1,14 @@
-const app = require('../index');
+const { app, startServer } = require('../index');
 const request = require('supertest');
 const fs = require('fs');
-const durationLogger = require('../middleware/requestDuration');
 const HttpStatusCodes = require('../constants/httpStatusCodes');
 
-app.use(durationLogger);
-app.get('/index.html', (req, res) => {
-  res.sendStatus(HttpStatusCodes.OK);
-});
+const logFile = './logs/requestsDuration.txt';
+let server;
 
 describe('Duration logger middleware', () => {
-  const logFile = './logs/requestDuration-test.txt';
-
   beforeAll((done) => {
+    server = startServer();
     fs.writeFile(logFile, '', (err) => {
       if (err) {
         console.log(err);
@@ -22,11 +18,13 @@ describe('Duration logger middleware', () => {
   });
 
   afterAll((done) => {
-    fs.unlink(logFile, (err) => {
-      if (err) {
-        console.error(err);
-      }
-      done();
+    server.close(() => {
+      fs.unlink(logFile, (err) => {
+        if (err) {
+          console.error(err);
+        }
+        done();
+      });
     });
   });
 
@@ -35,16 +33,11 @@ describe('Duration logger middleware', () => {
 
     expect(response.status).toBe(HttpStatusCodes.OK);
 
-    fs.promises.readFile(logFile, 'utf-8', (err, data) => {
-      if (err) {
-        console.error(err);
-      }
-      const logEntries = data.split('\n');
+    const data = await fs.promises.readFile(logFile, 'utf-8');
+    const logEntries = data.split('\n');
 
-      const logEntry = logEntries[logEntries.length - 1];
+    const logEntry = logEntries[logEntries.length - 2];
 
-      expect(logEntry).toBeDefined();
-      expect(logEntry).toMatch(/Request URL: \/index.html, Duration: \d+ms/);
-    });
+    expect(logEntry).toMatch(/Request URL: \/index.html, Duration: \d+ms/);
   });
 });
