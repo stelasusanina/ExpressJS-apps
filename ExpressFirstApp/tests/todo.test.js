@@ -99,6 +99,24 @@ describe('POST /todo', () => {
 });
 
 describe('DELETE /todo', () => {
+  it('should throw an error reading the file due to mock of fs.readFile', async () => {
+    const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path, encoding, callback) => {
+      callback(new Error('Could not read the file content.'))
+    });
+    
+    const taskIdToDelete = '1';
+
+    const response = await request(app)
+      .delete('/todo')
+      .send({ todoName, id: taskIdToDelete });
+
+    expect(response.status).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+    expect(response.error.text).toBe('Could not read the file content.');
+    expect(spyOnReadFile).toHaveBeenCalled();
+
+    spyOnReadFile.mockRestore();
+  });
+
   it('should delete a task by given todoName and id', async () => {
     const taskIdToDelete = '1';
 
