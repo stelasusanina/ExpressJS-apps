@@ -99,11 +99,11 @@ describe('POST /todo', () => {
 });
 
 describe('DELETE /todo', () => {
-  it('should throw an error reading the file due to mock of fs.readFile', async () => {
+  it('should throw an error while trying to delete tasks', async () => {
     const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path, encoding, callback) => {
       callback(new Error('Could not read the file content.'))
     });
-    
+
     const taskIdToDelete = '1';
 
     const response = await request(app)
@@ -115,6 +115,43 @@ describe('DELETE /todo', () => {
     expect(spyOnReadFile).toHaveBeenCalled();
 
     spyOnReadFile.mockRestore();
+  });
+
+  it('should delete a task by given todoName and id and return OK', async () => {
+    const toDoListContent = JSON.stringify({
+      tasks: [
+        { "id": "1", "task": "Task 1" },
+        { "id": "2", "task": "Task 2" },
+        { "id": "3", "task": "Task 3" }
+      ]
+    });
+
+    taskIdToDelete = '1';
+
+    const spyOnReadFile = jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation((path, encoding, callback) => {
+        callback(undefined, toDoListContent);
+      });
+
+      const spyOnWriteFile = jest
+      .spyOn(fs, 'writeFile')
+      .mockImplementation((filePath, data, callback) => {
+        if (callback && typeof callback === 'function') {
+          callback(undefined);
+        }
+      });
+
+    const response = await request(app)
+      .delete('/todo')
+      .send({ todoName, id: taskIdToDelete });
+
+    expect(response.statusCode).toBe(HttpStatusCodes.OK);
+    expect(spyOnReadFile).toHaveBeenCalled();
+    expect(spyOnWriteFile).toHaveBeenCalled();
+
+    spyOnReadFile.mockRestore();
+    spyOnWriteFile.mockRestore();
   });
 
   it('should delete a task by given todoName and id', async () => {
