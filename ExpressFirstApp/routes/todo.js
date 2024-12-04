@@ -11,7 +11,7 @@ router.post('/todo', (req, res) => {
     task,
   };
 
-  let todos = { tasks: [] };
+  let todos;
 
   if (!todoName || !id || !task) {
     return res
@@ -96,10 +96,10 @@ router.delete('/todo', (req, res) => {
       todos = JSON.parse(data);
     }
 
-    todos = todos.tasks.filter((t) => t.id !== id);
+    todos.tasks = todos.tasks.filter((t) => t.id !== id);
 
     //Deleting the file if there are no tasks left
-    if (todos.length === 0) {
+    if (todos.tasks.length === 0) {
       fs.unlink(`./todo/${todoName}.json`, (err) => {
         if (err) {
           console.error(err);

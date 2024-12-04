@@ -6,7 +6,8 @@
     "test": "jest --verbose --detectOpenHandles",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "debug": "node --inspect-brk=9229 index.js"
   },
   "author": "",
   "license": "ISC",

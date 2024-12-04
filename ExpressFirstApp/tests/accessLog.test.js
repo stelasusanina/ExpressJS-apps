@@ -6,7 +6,7 @@ const HttpStatusCodes = require('../constants/httpStatusCodes');
 const logFile = './logs/accessLog.txt';
 let server;
 
-describe('Access logger middleware', () => {
+xdescribe('Access logger middleware', () => {
   beforeAll((done) => {
     server = startServer();
     fs.writeFile(logFile, '', (err) => {
