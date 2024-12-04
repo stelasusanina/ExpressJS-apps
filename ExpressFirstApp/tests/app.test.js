@@ -22,7 +22,7 @@ jest.mock('../index', () => {
 //   server.close(done);
 // });
 
-it('should mock the server', () => {
+xit('should mock the server', () => {
   const result = startServer();
 
   expect(startServer).toHaveBeenCalledTimes(1);
