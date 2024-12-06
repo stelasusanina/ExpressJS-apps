@@ -1,17 +1,17 @@
-const express = require('express');
-const app = express();
-const dotenv = require('dotenv');
-const accessLogger = require('./middleware/accessLog');
-const corsMiddleware = require('./middleware/maintainCors');
-const durationLogger = require('./middleware/requestDuration');
-const bodyParser = require('body-parser');
-const todoRoutes = require('./routes/todo');
-const HttpStatusCodes = require('./constants/httpStatusCodes');
+import express, { Request, Response } from 'express';
+import dotenv from 'dotenv';
+import accessLogger from './middleware/accessLog';
+import corsMiddleware from './middleware/maintainCors';
+import durationLogger from './middleware/requestDuration';
+import bodyParser from 'body-parser';
+import todoRoutes from './routes/todo'
+import HttpStatusCodes from './constants/httpStatusCodes';
 
+const app = express();
 dotenv.config();
 
-const staticDirectory = process.env.STATIC_DIRECTORY || 'public';
-const port = process.env.PORT || 3000;
+const staticDirectory: string = process.env.STATIC_DIRECTORY || 'public';
+const port: number = 3000;
 
 //Use logging middleware
 app.use(accessLogger);
@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 //Use todoRoutes
 app.use(todoRoutes);
 
-app.use((req, res) => {
+app.use((req: Request, res: Response) => {
   res
     .status(HttpStatusCodes.NOT_FOUND)
     .sendFile('public/notFoundErrorPage.html', { root: __dirname });
@@ -35,7 +35,7 @@ app.use((req, res) => {
 
 //Function to start the server
 const startServer = () => {
-  const server = app.listen(port, (err) => {
+  const server = app.listen(port, (err?: any) => {
     if (err) {
       console.log('This port is already being used!');
       return;
@@ -50,4 +50,4 @@ if (require.main === module) {
   startServer();
 }
 
-module.exports = { app, startServer };
+export { app, startServer };
