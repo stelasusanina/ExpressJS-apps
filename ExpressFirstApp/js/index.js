@@ -3,31 +3,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.startServer = exports.app = void 0;
 const express_1 = __importDefault(require("express"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const accessLog_1 = __importDefault(require("./middleware/accessLog"));
+const maintainCors_1 = __importDefault(require("./middleware/maintainCors"));
+const requestDuration_1 = __importDefault(require("./middleware/requestDuration"));
+const body_parser_1 = __importDefault(require("body-parser"));
+//import todoRoutes from './routes/todo';
+const httpStatusCodes_1 = __importDefault(require("./constants/httpStatusCodes"));
 const app = (0, express_1.default)();
-const dotenv = require('dotenv');
-const accessLogger = require('./middleware/accessLog');
-const corsMiddleware = require('./middleware/maintainCors');
-const durationLogger = require('./middleware/requestDuration');
-const bodyParser = require('body-parser');
-const todoRoutes = require('./routes/todo');
-const HttpStatusCodes = require('./constants/httpStatusCodes');
-dotenv.config();
+exports.app = app;
+dotenv_1.default.config();
 const staticDirectory = process.env.STATIC_DIRECTORY || 'public';
-const port = process.env.PORT || 3000;
+const port = 3000;
 //Use logging middleware
-app.use(accessLogger);
-app.use(durationLogger);
+app.use(accessLog_1.default);
+app.use(requestDuration_1.default);
 //Serve static files
 app.use(express_1.default.static(staticDirectory));
 //Use other middleware
-app.use(corsMiddleware);
-app.use(bodyParser.json());
+app.use(maintainCors_1.default);
+app.use(body_parser_1.default.json());
 //Use todoRoutes
-app.use(todoRoutes);
+//app.use(todoRoutes);
 app.use((req, res) => {
     res
-        .status(HttpStatusCodes.NOT_FOUND)
+        .status(httpStatusCodes_1.default.NOT_FOUND)
         .sendFile('public/notFoundErrorPage.html', { root: __dirname });
 });
 //Function to start the server
@@ -41,7 +43,7 @@ const startServer = () => {
     });
     return server;
 };
+exports.startServer = startServer;
 if (require.main === module) {
     startServer();
 }
-module.exports = { app, startServer };
