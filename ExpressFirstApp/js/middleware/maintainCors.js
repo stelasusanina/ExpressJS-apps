@@ -29,3 +29,4 @@ const corsMiddleware = (req, res, next) => {
     next();
 };
 exports.default = corsMiddleware;
+//# sourceMappingURL=maintainCors.js.map

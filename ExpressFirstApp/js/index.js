@@ -10,7 +10,7 @@ const accessLog_1 = __importDefault(require("./middleware/accessLog"));
 const maintainCors_1 = __importDefault(require("./middleware/maintainCors"));
 const requestDuration_1 = __importDefault(require("./middleware/requestDuration"));
 const body_parser_1 = __importDefault(require("body-parser"));
-//import todoRoutes from './routes/todo';
+const todo_1 = __importDefault(require("./routes/todo"));
 const httpStatusCodes_1 = __importDefault(require("./constants/httpStatusCodes"));
 const app = (0, express_1.default)();
 exports.app = app;
@@ -26,7 +26,7 @@ app.use(express_1.default.static(staticDirectory));
 app.use(maintainCors_1.default);
 app.use(body_parser_1.default.json());
 //Use todoRoutes
-//app.use(todoRoutes);
+app.use(todo_1.default);
 app.use((req, res) => {
     res
         .status(httpStatusCodes_1.default.NOT_FOUND)
@@ -47,3 +47,4 @@ exports.startServer = startServer;
 if (require.main === module) {
     startServer();
 }
+//# sourceMappingURL=index.js.map

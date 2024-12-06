@@ -23,3 +23,4 @@ const durationLogger = (req, res, next) => {
     next();
 };
 exports.default = durationLogger;
+//# sourceMappingURL=requestDuration.js.map

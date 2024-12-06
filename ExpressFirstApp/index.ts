@@ -4,7 +4,7 @@ import accessLogger from './middleware/accessLog';
 import corsMiddleware from './middleware/maintainCors';
 import durationLogger from './middleware/requestDuration';
 import bodyParser from 'body-parser';
-import todoRoutes from './routes/todo';
+import todoRoutes from './routes/todo'
 import HttpStatusCodes from './constants/httpStatusCodes';
 
 const app = express();

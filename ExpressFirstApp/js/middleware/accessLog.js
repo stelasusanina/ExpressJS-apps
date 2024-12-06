@@ -21,3 +21,4 @@ const accessLogger = (req, res, next) => {
     next();
 };
 exports.default = accessLogger;
+//# sourceMappingURL=accessLog.js.map
