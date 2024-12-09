@@ -11,7 +11,7 @@ const corsOptionsJSON = {
   origin: '*',
 };
 
-const corsMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const corsMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   const fileType: string = path.extname(req.path);
 
   switch (fileType) {

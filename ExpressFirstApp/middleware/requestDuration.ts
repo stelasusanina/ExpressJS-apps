@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 
 const logDir: string = './logs';
 
-const durationLogger = (req: Request, res: Response, next: NextFunction) => {
+const durationLogger = (req: Request, res: Response, next: NextFunction): void => {
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
   }
