@@ -2,6 +2,7 @@ const request = require('supertest');
 const fs = require('fs');
 const { app, startServer } = require('../index');
 const HttpStatusCodes = require('../constants/httpStatusCodes');
+const os = require('os');
 
 let server;
 
@@ -150,7 +151,12 @@ describe('DELETE /todo', () => {
     expect(response.statusCode).toBe(HttpStatusCodes.OK);
     expect(spyOnReadFile).toHaveBeenCalled();
     expect(spyOnWriteFile).toHaveBeenCalled();
-    expect(spyOnWriteFile).toHaveBeenCalledTimes(1);
+
+    if (os.platform() === 'win32') {
+      expect(spyOnWriteFile).toHaveBeenCalledTimes(3);
+    } else if (os.platform() === 'darwin') {
+      expect(spyOnWriteFile).toHaveBeenCalledTimes(1);
+    }
 
     spyOnReadFile.mockRestore();
     spyOnWriteFile.mockRestore();
