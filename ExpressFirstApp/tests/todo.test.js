@@ -81,8 +81,6 @@ describe('POST /todo', () => {
   });
 
   it('should create a new todo file if it does not exist', async () => {
-    await fs.promises.unlink(todoFilePath);
-
     const newTask = { id: '1', task: 'First Task in New File' };
 
     const response = await request(app).post('/todo').send({
