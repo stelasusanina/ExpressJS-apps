@@ -6,7 +6,7 @@ const HttpStatusCodes = require('../constants/httpStatusCodes');
 const logFile = './logs/requestsDuration.txt';
 let server;
 
-xdescribe('Duration logger middleware', () => {
+describe('Duration logger middleware', () => {
   beforeAll((done) => {
     server = startServer();
     fs.writeFile(logFile, '', (err) => {

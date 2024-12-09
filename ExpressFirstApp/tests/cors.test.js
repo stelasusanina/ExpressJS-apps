@@ -12,7 +12,7 @@ afterAll((done) => {
   server.close(done);
 });
 
-xdescribe('CORS tests', () => {
+describe('CORS tests', () => {
   it('the Access-Control-Allow-Origin should be * for JSON files', async () => {
     const response = await request(app).get('/static/data.json');
     expect(response.headers['access-control-allow-origin']).toBe('*');

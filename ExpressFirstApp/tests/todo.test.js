@@ -14,110 +14,110 @@ afterAll((done) => {
   server.close(done);
 });
 
-// const todoName = 'testTodo';
-// const todoContent = {
-//   tasks: [
-//     { id: '1', task: 'Test Task' },
-//     { id: '2', task: 'Second Test Task' },
-//   ],
-// };
-// const todoFilePath = `./todo/${todoName}.json`;
+const todoName = 'testTodo';
+const todoContent = {
+  tasks: [
+    { id: '1', task: 'Test Task' },
+    { id: '2', task: 'Second Test Task' },
+  ],
+};
+const todoFilePath = `./todo/${todoName}.json`;
 
-// beforeEach((done) => {
-//   fs.writeFile(todoFilePath, JSON.stringify(todoContent), (err) => {
-//     if (err) {
-//       console.error(err);
-//     }
-//     done();
-//   });
-// });
+beforeEach((done) => {
+  fs.writeFile(todoFilePath, JSON.stringify(todoContent), (err) => {
+    if (err) {
+      console.error(err);
+    }
+    done();
+  });
+});
 
-// afterEach((done) => {
-//   fs.unlink(todoFilePath, (err) => {
-//     if (err) {
-//       console.error(err);
-//     }
-//     done();
-//   });
-// });
+afterEach((done) => {
+  fs.unlink(todoFilePath, (err) => {
+    if (err) {
+      console.error(err);
+    }
+    done();
+  });
+});
 
-// describe('GET /todo', () => {
-//   it('should get the content from the file', async () => {
-//     const response = await request(app).get('/todo').query({ todoName });
-//     expect(response.status).toBe(HttpStatusCodes.OK);
-//     expect(response.body).toStrictEqual(todoContent);
-//   });
+describe('GET /todo', () => {
+  it('should get the content from the file', async () => {
+    const response = await request(app).get('/todo').query({ todoName });
+    expect(response.status).toBe(HttpStatusCodes.OK);
+    expect(response.body).toStrictEqual(todoContent);
+  });
 
-//   it('should return 400 if todoName is missing', async () => {
-//     const response = await request(app).get('/todo').query({});
-//     expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
-//     expect(response.text).toBe('Missing required field "todoName"');
-//   });
-// });
+  it('should return 400 if todoName is missing', async () => {
+    const response = await request(app).get('/todo').query({});
+    expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
+    expect(response.text).toBe('Missing required field "todoName"');
+  });
+});
 
-// describe('POST /todo', () => {
-//   it('should append a task to an existing todo file', async () => {
-//     const newTask = { id: '3', task: 'Another Test Task' };
+describe('POST /todo', () => {
+  it('should append a task to an existing todo file', async () => {
+    const newTask = { id: '3', task: 'Another Test Task' };
 
-//     const response = await request(app).post('/todo').send({
-//       todoName,
-//       id: newTask.id,
-//       task: newTask.task,
-//     });
+    const response = await request(app).post('/todo').send({
+      todoName,
+      id: newTask.id,
+      task: newTask.task,
+    });
 
-//     expect(response.status).toBe(HttpStatusCodes.OK);
+    expect(response.status).toBe(HttpStatusCodes.OK);
 
-//     const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
-//     const todos = JSON.parse(fileData);
-//     expect(todos.tasks).toContainEqual(todoContent.tasks[0]);
-//     expect(todos.tasks).toContainEqual(newTask);
-//   });
+    const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
+    const todos = JSON.parse(fileData);
+    expect(todos.tasks).toContainEqual(todoContent.tasks[0]);
+    expect(todos.tasks).toContainEqual(newTask);
+  });
 
-//   it('should return 400 if required fields are missing', async () => {
-//     const response = await request(app).post('/todo').send({});
-//     expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
-//     expect(response.text).toBe('Missing required fields');
-//   });
+  it('should return 400 if required fields are missing', async () => {
+    const response = await request(app).post('/todo').send({});
+    expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
+    expect(response.text).toBe('Missing required fields');
+  });
 
-//   it('should create a new todo file if it does not exist', async () => {
-//     await fs.promises.unlink(todoFilePath);
+  it('should create a new todo file if it does not exist', async () => {
+    await fs.promises.unlink(todoFilePath);
 
-//     const newTask = { id: '1', task: 'First Task in New File' };
+    const newTask = { id: '1', task: 'First Task in New File' };
 
-//     const response = await request(app).post('/todo').send({
-//       todoName,
-//       id: newTask.id,
-//       task: newTask.task,
-//     });
+    const response = await request(app).post('/todo').send({
+      todoName,
+      id: newTask.id,
+      task: newTask.task,
+    });
 
-//     expect(response.status).toBe(HttpStatusCodes.OK);
+    expect(response.status).toBe(HttpStatusCodes.OK);
 
-//     const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
-//     const todos = JSON.parse(fileData);
-//     expect(todos.tasks).toContainEqual(newTask);
-//   });
-// });
+    const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
+    const todos = JSON.parse(fileData);
+    expect(todos.tasks).toContainEqual(newTask);
+  });
+});
 
 describe('DELETE /todo', () => {
-  // it('should throw an error while trying to delete tasks', async () => {
-  //   const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path, encoding, callback) => {
-  //     callback(new Error('Could not read the file content.'))
-  //   });
+  it('should throw an error while trying to delete tasks', async () => {
+    const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path, encoding, callback) => {
+      callback(new Error('Could not read the file content.'))
+    });
 
-  //   const taskIdToDelete = '1';
+    const taskIdToDelete = '1';
 
-  //   const response = await request(app)
-  //     .delete('/todo')
-  //     .send({ todoName, id: taskIdToDelete });
+    const response = await request(app)
+      .delete('/todo')
+      .send({ todoName, id: taskIdToDelete });
 
-  //   expect(response.status).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR);
-  //   expect(response.error.text).toBe('Could not read the file content.');
-  //   expect(spyOnReadFile).toHaveBeenCalled();
+    expect(response.status).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+    expect(response.error.text).toBe('Could not read the file content.');
+    expect(spyOnReadFile).toHaveBeenCalled();
 
-  //   spyOnReadFile.mockRestore();
-  // });
+    spyOnReadFile.mockRestore();
+  });
 
-  it('should delete a task by given todoName and id', async () => {
+  it('should successfully delete a task by given todoName and id', async () => {
     const toDoListContent = JSON.stringify({
       tasks: [
         { "id": "1", "task": "Task 1" },
@@ -154,28 +154,28 @@ describe('DELETE /todo', () => {
 
     spyOnReadFile.mockRestore();
     spyOnWriteFile.mockRestore();
-  }, 40000);
+  });
 
-  // it('should delete a task by given todoName and id', async () => {
-  //   const taskIdToDelete = '1';
+  it('should delete a task by given todoName and id', async () => {
+    const taskIdToDelete = '1';
 
-  //   const response = await request(app)
-  //     .delete('/todo')
-  //     .send({ todoName, id: taskIdToDelete });
+    const response = await request(app)
+      .delete('/todo')
+      .send({ todoName, id: taskIdToDelete });
 
-  //   expect(response.status).toBe(HttpStatusCodes.OK);
+    expect(response.status).toBe(HttpStatusCodes.OK);
 
-  //   const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
-  //   const todos = JSON.parse(fileData);
-  //   expect(todos.tasks).not.toEqual({
-  //     id: taskIdToDelete,
-  //     task: 'Test Task',
-  //   });
-  // });
+    const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
+    const todos = JSON.parse(fileData);
+    expect(todos.tasks).not.toEqual({
+      id: taskIdToDelete,
+      task: 'Test Task',
+    });
+  });
 
-  // it('should return 400 if required fields are missing', async () => {
-  //   const response = await request(app).delete('/todo').send({});
-  //   expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
-  //   expect(response.text).toBe('Missing required fields');
-  // });
+  it('should return 400 if required fields are missing', async () => {
+    const response = await request(app).delete('/todo').send({});
+    expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
+    expect(response.text).toBe('Missing required fields');
+  });
 });
