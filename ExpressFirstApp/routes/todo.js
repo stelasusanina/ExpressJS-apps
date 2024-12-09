@@ -96,10 +96,10 @@ router.delete('/todo', (req, res) => {
       todos = JSON.parse(data);
     }
 
-    todos.tasks = todos.tasks.filter((t) => t.id !== id);
+    todos = todos.tasks.filter((t) => t.id !== id);
 
     //Deleting the file if there are no tasks left
-    if (todos.tasks.length === 0) {
+    if (todos.length === 0) {
       fs.unlink(`./todo/${todoName}.json`, (err) => {
         if (err) {
           console.error(err);
