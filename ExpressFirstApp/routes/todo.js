@@ -11,7 +11,7 @@ router.post('/todo', (req, res) => {
     task,
   };
 
-  let todos = { tasks: [] };
+  let todos;
 
   if (!todoName || !id || !task) {
     return res

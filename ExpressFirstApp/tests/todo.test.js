@@ -2,6 +2,7 @@ const request = require('supertest');
 const fs = require('fs');
 const { app, startServer } = require('../index');
 const HttpStatusCodes = require('../constants/httpStatusCodes');
+const os = require('os');
 
 let server;
 
@@ -80,8 +81,6 @@ describe('POST /todo', () => {
   });
 
   it('should create a new todo file if it does not exist', async () => {
-    await fs.promises.unlink(todoFilePath);
-
     const newTask = { id: '1', task: 'First Task in New File' };
 
     const response = await request(app).post('/todo').send({
@@ -99,6 +98,68 @@ describe('POST /todo', () => {
 });
 
 describe('DELETE /todo', () => {
+  it('should throw an error while trying to delete tasks', async () => {
+    const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path, encoding, callback) => {
+      callback(new Error('Could not read the file content.'))
+    });
+
+    const taskIdToDelete = '1';
+
+    const response = await request(app)
+      .delete('/todo')
+      .send({ todoName, id: taskIdToDelete });
+
+    expect(response.status).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR);
+    expect(response.error.text).toBe('Could not read the file content.');
+    expect(spyOnReadFile).toHaveBeenCalled();
+
+    spyOnReadFile.mockRestore();
+  });
+
+  it('should successfully delete a task by given todoName and id', async () => {
+    const toDoListContent = JSON.stringify({
+      tasks: [
+        { "id": "1", "task": "Task 1" },
+        { "id": "2", "task": "Task 2" },
+        { "id": "3", "task": "Task 3" }
+      ]
+    });
+
+    taskIdToDelete = '1';
+
+    const spyOnReadFile = jest
+      .spyOn(fs, 'readFile')
+      .mockImplementation((path, encoding, callback) => {
+        callback(undefined, toDoListContent);
+      });
+
+      const spyOnWriteFile = jest
+      .spyOn(fs, 'writeFile')
+      .mockImplementation((filePath, data, callback) => {
+        if (callback && typeof callback === 'function') {
+          callback();
+        }
+        //callback(undefined);
+      });
+
+    const response = await request(app)
+      .delete('/todo')
+      .send({ todoName: 'testTodo', id: taskIdToDelete });
+
+    expect(response.statusCode).toBe(HttpStatusCodes.OK);
+    expect(spyOnReadFile).toHaveBeenCalled();
+    expect(spyOnWriteFile).toHaveBeenCalled();
+
+    if (os.platform() === 'win32') {
+      expect(spyOnWriteFile).toHaveBeenCalledTimes(3);
+    } else if (os.platform() === 'darwin') {
+      expect(spyOnWriteFile).toHaveBeenCalledTimes(1);
+    }
+
+    spyOnReadFile.mockRestore();
+    spyOnWriteFile.mockRestore();
+  });
+
   it('should delete a task by given todoName and id', async () => {
     const taskIdToDelete = '1';
 
