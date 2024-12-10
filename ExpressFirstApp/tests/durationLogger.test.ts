@@ -1,10 +1,11 @@
-const { app, startServer } = require('../index');
-const request = require('supertest');
-const fs = require('fs');
-const HttpStatusCodes = require('../constants/httpStatusCodes');
+import { app, startServer } from '../index';
+import request, { Response } from 'supertest';
+import fs from 'fs';
+import HttpStatusCodes from '../constants/httpStatusCodes';
+import { Server } from 'http';
 
-const logFile = './logs/requestsDuration.txt';
-let server;
+const logFile: string = './logs/requestsDuration.txt';
+let server: Server;
 
 describe('Duration logger middleware', () => {
   beforeAll((done) => {
@@ -29,14 +30,14 @@ describe('Duration logger middleware', () => {
   });
 
   it('should log request duration in the right format', async () => {
-    const response = await request(app).get('/index.html');
+    const response: Response = await request(app).get('/index.html');
 
     expect(response.status).toBe(HttpStatusCodes.OK);
 
-    const data = await fs.promises.readFile(logFile, 'utf-8');
-    const logEntries = data.split('\n');
+    const data: string = await fs.promises.readFile(logFile, 'utf-8');
+    const logEntries: string[] = data.split('\n');
 
-    const logEntry = logEntries[logEntries.length - 2];
+    const logEntry: string = logEntries[logEntries.length - 2];
 
     expect(logEntry).toMatch(/Request URL: \/index.html, Duration: \d+ms/);
   });

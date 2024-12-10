@@ -1,22 +1,26 @@
-const express = require('express');
-const fs = require('fs');
-const HttpStatusCodes = require('../constants/httpStatusCodes');
+import express, { Request, Response } from 'express'
+import fs from 'fs';
+import HttpStatusCodes from '../constants/httpStatusCodes';
+import ToDo from '../interfaces/todo';
+import ToDoList from '../interfaces/todoList';
 const router = express.Router();
 
 //Creating new todo files or appending to already created
-router.post('/todo', (req, res) => {
-  const { todoName, id, task } = req.body;
-  const newTodo = {
+router.post('/todo', (req: Request, res: Response): void => {
+  const { todoName, id, task }: ToDo = req.body;
+
+  const newTodo: ToDo = {
     id,
     task,
   };
 
-  let todos;
+  let todos: ToDoList = { tasks: [] };
 
   if (!todoName || !id || !task) {
-    return res
+    res
       .status(HttpStatusCodes.BAD_REQUEST)
       .send('Missing required fields');
+    return;
   }
 
   // Read the existing JSON file
@@ -26,7 +30,7 @@ router.post('/todo', (req, res) => {
         console.log('File does not exist, creating a new one.');
       } else {
         console.error(err);
-        return res
+        res
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
           .send('Could not read the file content.');
       }
@@ -50,40 +54,42 @@ router.post('/todo', (req, res) => {
 });
 
 //Getting the content from to do lists
-router.get('/todo', (req, res) => {
-  const { todoName } = req.query;
-
-  if (!todoName) {
-    return res
-      .status(HttpStatusCodes.BAD_REQUEST)
-      .send('Missing required field "todoName"');
-  }
-
-  fs.readFile(`./todo/${todoName}.json`, 'utf-8', (err, data) => {
-    if (err) {
-      console.error(err.message);
-      return res
-        .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
-        .send('Could not read the file content.');
-    } else {
-      console.log(`${todoName}: `);
-      console.log(JSON.parse(data));
-
-      res.send(JSON.parse(data));
+router.get('/todo', (req: Request, res: Response): void => {
+    const { todoName } = req.query;
+  
+    if (!todoName) {
+        res
+        .status(HttpStatusCodes.BAD_REQUEST)
+        .send('Missing required field "todoName"');
     }
+  
+    fs.readFile(`./todo/${todoName}.json`, 'utf-8', (err, data) => {
+      if (err) {
+        console.error(err.message);
+        return res
+          .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
+          .send('Could not read the file content.');
+      } else {
+        console.log(`${todoName}: `);
+        console.log(JSON.parse(data));
+  
+        res.send(JSON.parse(data));
+      }
+    });
   });
-});
+
 
 //Deleting tasks
-router.delete('/todo', (req, res) => {
-  const { todoName, id } = req.body;
+router.delete('/todo', (req, res): void => {
+  const { todoName, id }: ToDo = req.body;
 
-  let todos = { tasks: [] };
+  let todos: ToDoList = { tasks: [] };
 
   if (!todoName || !id) {
-    return res
+    res
       .status(HttpStatusCodes.BAD_REQUEST)
       .send('Missing required fields');
+    return;
   }
 
   fs.readFile(`./todo/${todoName}.json`, 'utf-8', (err, data) => {
@@ -96,10 +102,10 @@ router.delete('/todo', (req, res) => {
       todos = JSON.parse(data);
     }
 
-    todos = todos.tasks.filter((t) => t.id !== id);
+    todos.tasks = todos.tasks.filter((t) => t.id !== id);
 
     //Deleting the file if there are no tasks left
-    if (todos.length === 0) {
+    if (todos.tasks.length === 0) {
       fs.unlink(`./todo/${todoName}.json`, (err) => {
         if (err) {
           console.error(err);
@@ -129,4 +135,4 @@ router.delete('/todo', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

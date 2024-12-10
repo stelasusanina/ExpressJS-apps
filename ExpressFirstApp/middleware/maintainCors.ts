@@ -1,5 +1,6 @@
-const cors = require('cors');
-const path = require('path');
+import { Request, Response, NextFunction } from "express";
+import cors from 'cors';
+import path from 'path';
 
 // Middleware to dynamically set the Content-Type and CORS headers based on file type
 const corsOptionsHTML = {
@@ -10,8 +11,8 @@ const corsOptionsJSON = {
   origin: '*',
 };
 
-const corsMiddleware = (req, res, next) => {
-  const fileType = path.extname(req.path);
+const corsMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+  const fileType: string = path.extname(req.path);
 
   switch (fileType) {
     case '.html':
@@ -29,4 +30,4 @@ const corsMiddleware = (req, res, next) => {
   next();
 };
 
-module.exports = corsMiddleware;
+export default corsMiddleware;

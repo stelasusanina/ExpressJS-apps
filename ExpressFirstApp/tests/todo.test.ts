@@ -1,10 +1,12 @@
-const request = require('supertest');
-const fs = require('fs');
-const { app, startServer } = require('../index');
-const HttpStatusCodes = require('../constants/httpStatusCodes');
-const os = require('os');
+import request, { Response } from 'supertest';
+import fs from 'fs';
+import { app, startServer } from '../index';
+import HttpStatusCodes from '../constants/httpStatusCodes';
+import { Server } from 'http';
+import ToDoList from '../interfaces/todoList';
+import ToDo from '../interfaces/todo';
 
-let server;
+let server: Server;
 
 beforeAll((done) => {
   server = startServer();
@@ -15,14 +17,14 @@ afterAll((done) => {
   server.close(done);
 });
 
-const todoName = 'testTodo';
-const todoContent = {
+const todoName: string = 'testTodo';
+const todoContent: ToDoList = {
   tasks: [
-    { id: '1', task: 'Test Task' },
-    { id: '2', task: 'Second Test Task' },
+    { id: 1, task: 'Test Task' },
+    { id: 2, task: 'Second Test Task' },
   ],
 };
-const todoFilePath = `./todo/${todoName}.json`;
+const todoFilePath: string = `./todo/${todoName}.json`;
 
 beforeEach((done) => {
   fs.writeFile(todoFilePath, JSON.stringify(todoContent), (err) => {
@@ -44,13 +46,13 @@ afterEach((done) => {
 
 describe('GET /todo', () => {
   it('should get the content from the file', async () => {
-    const response = await request(app).get('/todo').query({ todoName });
+    const response: Response = await request(app).get('/todo').query({ todoName });
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(response.body).toStrictEqual(todoContent);
   });
 
   it('should return 400 if todoName is missing', async () => {
-    const response = await request(app).get('/todo').query({});
+    const response: Response = await request(app).get('/todo').query({});
     expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
     expect(response.text).toBe('Missing required field "todoName"');
   });
@@ -58,9 +60,9 @@ describe('GET /todo', () => {
 
 describe('POST /todo', () => {
   it('should append a task to an existing todo file', async () => {
-    const newTask = { id: '3', task: 'Another Test Task' };
+    const newTask: ToDo = { id: 3, task: 'Another Test Task' };
 
-    const response = await request(app).post('/todo').send({
+    const response: Response = await request(app).post('/todo').send({
       todoName,
       id: newTask.id,
       task: newTask.task,
@@ -68,22 +70,22 @@ describe('POST /todo', () => {
 
     expect(response.status).toBe(HttpStatusCodes.OK);
 
-    const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
-    const todos = JSON.parse(fileData);
+    const fileData: string = await fs.promises.readFile(todoFilePath, 'utf-8');
+    const todos: ToDoList = JSON.parse(fileData);
     expect(todos.tasks).toContainEqual(todoContent.tasks[0]);
     expect(todos.tasks).toContainEqual(newTask);
   });
 
   it('should return 400 if required fields are missing', async () => {
-    const response = await request(app).post('/todo').send({});
+    const response: Response = await request(app).post('/todo').send({});
     expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
     expect(response.text).toBe('Missing required fields');
   });
 
   it('should create a new todo file if it does not exist', async () => {
-    const newTask = { id: '1', task: 'First Task in New File' };
+    const newTask: ToDo = { id: 1, task: 'First Task in New File' };
 
-    const response = await request(app).post('/todo').send({
+    const response: Response = await request(app).post('/todo').send({
       todoName,
       id: newTask.id,
       task: newTask.task,
@@ -91,8 +93,8 @@ describe('POST /todo', () => {
 
     expect(response.status).toBe(HttpStatusCodes.OK);
 
-    const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
-    const todos = JSON.parse(fileData);
+    const fileData: string = await fs.promises.readFile(todoFilePath, 'utf-8');
+    const todos: ToDoList = JSON.parse(fileData);
     expect(todos.tasks).toContainEqual(newTask);
   });
 });
@@ -161,7 +163,7 @@ describe('DELETE /todo', () => {
   });
 
   it('should delete a task by given todoName and id', async () => {
-    const taskIdToDelete = '1';
+    const taskIdToDelete: number = 1;
 
     const response = await request(app)
       .delete('/todo')
@@ -169,8 +171,8 @@ describe('DELETE /todo', () => {
 
     expect(response.status).toBe(HttpStatusCodes.OK);
 
-    const fileData = await fs.promises.readFile(todoFilePath, 'utf-8');
-    const todos = JSON.parse(fileData);
+    const fileData: string = await fs.promises.readFile(todoFilePath, 'utf-8');
+    const todos: ToDoList = JSON.parse(fileData);
     expect(todos.tasks).not.toEqual({
       id: taskIdToDelete,
       task: 'Test Task',
@@ -178,7 +180,7 @@ describe('DELETE /todo', () => {
   });
 
   it('should return 400 if required fields are missing', async () => {
-    const response = await request(app).delete('/todo').send({});
+    const response: Response = await request(app).delete('/todo').send({});
     expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
     expect(response.text).toBe('Missing required fields');
   });
