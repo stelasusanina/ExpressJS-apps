@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [{"id":1,"task":"Review Stella's PR"},{"id":3,"task":"Review Stella's PR"}]
+=======
+{"tasks":[{"id":1,"task":"Review Stella's PR"},{"id":3,"task":"Review Stella's PR"},{"id":4,"task":"Test task"},{"id":4,"task":"Test task"},{"id":4,"task":"Test task"}]}
+>>>>>>> e07c984 (TS config added; Status codes updated to enum;)
