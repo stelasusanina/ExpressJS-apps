@@ -5,6 +5,7 @@ import HttpStatusCodes from '../constants/httpStatusCodes';
 import { Server } from 'http';
 import ToDoList from '../interfaces/todoList';
 import ToDo from '../interfaces/todo';
+import os from 'os';
 
 let server: Server;
 
@@ -14,7 +15,7 @@ beforeAll((done) => {
 });
 
 afterAll((done) => {
-  server.close(done);
+  server.closeAllConnections();
 });
 
 const todoName: string = 'testTodo';
@@ -121,13 +122,13 @@ describe('DELETE /todo', () => {
   it('should successfully delete a task by given todoName and id', async () => {
     const toDoListContent = JSON.stringify({
       tasks: [
-        { "id": "1", "task": "Task 1" },
-        { "id": "2", "task": "Task 2" },
-        { "id": "3", "task": "Task 3" }
+        { "id": 1, "task": "Task 1" },
+        { "id": 2, "task": "Task 2" },
+        { "id": 3, "task": "Task 3" }
       ]
     });
 
-    taskIdToDelete = '1';
+    const taskIdToDelete: number = 1;
 
     const spyOnReadFile = jest
       .spyOn(fs, 'readFile')
@@ -139,7 +140,7 @@ describe('DELETE /todo', () => {
       .spyOn(fs, 'writeFile')
       .mockImplementation((filePath, data, callback) => {
         if (callback && typeof callback === 'function') {
-          callback();
+          callback(null);
         }
         //callback(undefined);
       });

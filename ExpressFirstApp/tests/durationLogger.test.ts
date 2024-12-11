@@ -19,14 +19,14 @@ describe('Duration logger middleware', () => {
   });
 
   afterAll((done) => {
-    server.close(() => {
-      fs.unlink(logFile, (err) => {
-        if (err) {
-          console.error(err);
-        }
-        done();
-      });
+    fs.unlink(logFile, (err) => {
+      if (err) {
+        console.error(err);
+      }
+      done();
     });
+    
+    server.closeAllConnections();
   });
 
   it('should log request duration in the right format', async () => {

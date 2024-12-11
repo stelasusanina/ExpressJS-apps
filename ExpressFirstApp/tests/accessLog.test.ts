@@ -19,14 +19,14 @@ describe('Access logger middleware', () => {
   });
 
   afterAll((done) => {
-    server.close(() => {
-      fs.unlink(logFile, (err) => {
-        if (err) {
-          console.error(err);
-        }
-        done();
-      });
+    fs.unlink(logFile, (err) => {
+      if (err) {
+        console.error(err);
+      }
+      done();
     });
+    
+    server.closeAllConnections();
   });
 
   it('should log access log in the right format', async () => {

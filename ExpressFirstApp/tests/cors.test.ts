@@ -10,7 +10,7 @@ beforeAll((done) => {
 });
 
 afterAll((done) => {
-  server.close(done);
+  server.closeAllConnections();
 });
 
 describe('CORS tests', () => {
