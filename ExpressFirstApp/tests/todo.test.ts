@@ -1,5 +1,5 @@
 import request, { Response } from 'supertest';
-import fs from 'fs';
+import fs, { PathOrFileDescriptor } from 'fs';
 import { app, startServer } from '../index';
 import HttpStatusCodes from '../constants/httpStatusCodes';
 import { Server } from 'http';
@@ -19,6 +19,7 @@ afterAll((done) => {
 });
 
 const todoName: string = 'testTodo';
+
 const todoContent: ToDoList = {
   tasks: [
     { id: 1, task: 'Test Task' },
@@ -102,8 +103,8 @@ describe('POST /todo', () => {
 
 describe('DELETE /todo', () => {
   it('should throw an error while trying to delete tasks', async () => {
-    const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path, encoding, callback) => {
-      callback(new Error('Could not read the file content.'))
+    const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path: PathOrFileDescriptor, callback: (err: Error | null, data: Buffer) => void) => {
+      callback(new Error('Could not read the file content.'), Buffer.alloc(0));
     });
 
     const taskIdToDelete = '1';
@@ -113,7 +114,7 @@ describe('DELETE /todo', () => {
       .send({ todoName, id: taskIdToDelete });
 
     expect(response.status).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR);
-    expect(response.error.text).toBe('Could not read the file content.');
+    expect(response.error.valueOf).toBe('Could not read the file content.');
     expect(spyOnReadFile).toHaveBeenCalled();
 
     spyOnReadFile.mockRestore();
@@ -130,10 +131,8 @@ describe('DELETE /todo', () => {
 
     const taskIdToDelete: number = 1;
 
-    const spyOnReadFile = jest
-      .spyOn(fs, 'readFile')
-      .mockImplementation((path, encoding, callback) => {
-        callback(undefined, toDoListContent);
+      const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path: PathOrFileDescriptor, callback: (err: Error | null, data: Buffer) => void) => {
+        callback(null, Buffer.from(toDoListContent));
       });
 
       const spyOnWriteFile = jest

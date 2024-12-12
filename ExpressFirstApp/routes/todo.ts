@@ -61,11 +61,13 @@ router.get('/todo', (req: Request, res: Response): void => {
         res
         .status(HttpStatusCodes.BAD_REQUEST)
         .send('Missing required field "todoName"');
+        return;
+
     }
   
     fs.readFile(`./todo/${todoName}.json`, 'utf-8', (err, data) => {
       if (err) {
-        console.error(err.message);
+        //console.error(err.message);
         return res
           .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
           .send('Could not read the file content.');
