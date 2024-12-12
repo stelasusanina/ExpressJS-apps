@@ -2,7 +2,7 @@ import request, { Response } from 'supertest';
 import { app, startServer } from '../index';
 import { promises as fs } from 'fs';
 import HttpStatusCodes from '../constants/httpStatusCodes';
-import { Server } from 'http';
+import { Server } from 'http'
 
 let server: Server;
 
