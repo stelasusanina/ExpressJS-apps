@@ -26,7 +26,7 @@ describe('Duration logger middleware', () => {
       done();
     });
     
-    server.closeAllConnections();
+    server.close(done);
   });
 
   it('should log request duration in the right format', async () => {

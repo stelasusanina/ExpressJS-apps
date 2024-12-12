@@ -26,7 +26,7 @@ describe('Access logger middleware', () => {
       done();
     });
     
-    server.closeAllConnections();
+    server.close(done);
   });
 
   it('should log access log in the right format', async () => {

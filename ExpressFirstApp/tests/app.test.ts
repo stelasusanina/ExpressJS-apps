@@ -12,7 +12,7 @@ beforeAll((done) => {
 });
 
 afterAll((done) => {
-  server.closeAllConnections();
+  server.close(done);
 });
 
 describe('routes', () => {
