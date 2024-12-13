@@ -5,6 +5,7 @@ import HttpStatusCodes from '../constants/httpStatusCodes';
 import { Server } from 'http';
 import ToDoList from '../interfaces/todoList';
 import ToDo from '../interfaces/todo';
+import os from 'os';
 
 let server: Server;
 
@@ -14,10 +15,12 @@ beforeAll((done) => {
 });
 
 afterAll((done) => {
-  server.close(done);
+  server.close();
+  done();
 });
 
 const todoName: string = 'testTodo';
+
 const todoContent: ToDoList = {
   tasks: [
     { id: 1, task: 'Test Task' },
@@ -101,8 +104,8 @@ describe('POST /todo', () => {
 
 describe('DELETE /todo', () => {
   it('should throw an error while trying to delete tasks', async () => {
-    const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path, encoding, callback) => {
-      callback(new Error('Could not read the file content.'))
+    const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path, callback) => {
+      callback(new Error('Could not read the file content.'), Buffer.alloc(0));
     });
 
     const taskIdToDelete = '1';
@@ -112,8 +115,8 @@ describe('DELETE /todo', () => {
       .send({ todoName, id: taskIdToDelete });
 
     expect(response.status).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR);
-    expect(response.error.text).toBe('Could not read the file content.');
-    expect(spyOnReadFile).toHaveBeenCalled();
+    expect(response.text).toBe('Could not read the file content.');
+    expect(fs.readFile).toHaveBeenCalled();
 
     spyOnReadFile.mockRestore();
   });
@@ -121,27 +124,26 @@ describe('DELETE /todo', () => {
   it('should successfully delete a task by given todoName and id', async () => {
     const toDoListContent = JSON.stringify({
       tasks: [
-        { "id": "1", "task": "Task 1" },
-        { "id": "2", "task": "Task 2" },
-        { "id": "3", "task": "Task 3" }
+        { "id": 1, "task": "Task 1" },
+        { "id": 2, "task": "Task 2" },
+        { "id": 3, "task": "Task 3" }
       ]
     });
 
-    taskIdToDelete = '1';
+    const taskIdToDelete: number = 1;
 
     const spyOnReadFile = jest
-      .spyOn(fs, 'readFile')
-      .mockImplementation((path, encoding, callback) => {
-        callback(undefined, toDoListContent);
-      });
+    .spyOn(fs, 'readFile')
+    .mockImplementation((path, callback) => {
+      callback(null, Buffer.from(toDoListContent));
+    });
 
       const spyOnWriteFile = jest
       .spyOn(fs, 'writeFile')
       .mockImplementation((filePath, data, callback) => {
         if (callback && typeof callback === 'function') {
-          callback();
+          callback(null);
         }
-        //callback(undefined);
       });
 
     const response = await request(app)
