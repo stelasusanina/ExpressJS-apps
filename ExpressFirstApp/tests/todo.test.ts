@@ -1,5 +1,5 @@
 import request, { Response } from 'supertest';
-import fs, { PathOrFileDescriptor } from 'fs';
+import fs from 'fs';
 import { app, startServer } from '../index';
 import HttpStatusCodes from '../constants/httpStatusCodes';
 import { Server } from 'http';
@@ -15,7 +15,8 @@ beforeAll((done) => {
 });
 
 afterAll((done) => {
-  server.close(done);
+  server.close();
+  done();
 });
 
 const todoName: string = 'testTodo';
@@ -102,8 +103,8 @@ describe('POST /todo', () => {
 });
 
 describe('DELETE /todo', () => {
-  xit('should throw an error while trying to delete tasks', async () => {
-    const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path: PathOrFileDescriptor, callback: (err: Error | null, data: Buffer) => void) => {
+  it('should throw an error while trying to delete tasks', async () => {
+    const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path, callback) => {
       callback(new Error('Could not read the file content.'), Buffer.alloc(0));
     });
 
@@ -114,8 +115,8 @@ describe('DELETE /todo', () => {
       .send({ todoName, id: taskIdToDelete });
 
     expect(response.status).toBe(HttpStatusCodes.INTERNAL_SERVER_ERROR);
-    //expect(response.text).toBe('Could not read the file content.');
-    expect(spyOnReadFile).toHaveBeenCalled();
+    expect(response.text).toBe('Could not read the file content.');
+    expect(fs.readFile).toHaveBeenCalled();
 
     spyOnReadFile.mockRestore();
   });
@@ -131,9 +132,11 @@ describe('DELETE /todo', () => {
 
     const taskIdToDelete: number = 1;
 
-      const spyOnReadFile = jest.spyOn(fs, 'readFile').mockImplementation((path: PathOrFileDescriptor, callback: (err: Error | null, data: Buffer) => void) => {
-        callback(null, Buffer.from(toDoListContent));
-      });
+    const spyOnReadFile = jest
+    .spyOn(fs, 'readFile')
+    .mockImplementation((path, callback) => {
+      callback(null, Buffer.from(toDoListContent));
+    });
 
       const spyOnWriteFile = jest
       .spyOn(fs, 'writeFile')
@@ -141,7 +144,6 @@ describe('DELETE /todo', () => {
         if (callback && typeof callback === 'function') {
           callback(null);
         }
-        //callback(undefined);
       });
 
     const response = await request(app)
@@ -162,7 +164,7 @@ describe('DELETE /todo', () => {
     spyOnWriteFile.mockRestore();
   });
 
-  xit('should delete a task by given todoName and id', async () => {
+  it('should delete a task by given todoName and id', async () => {
     const taskIdToDelete: number = 1;
 
     const response = await request(app)
@@ -179,7 +181,7 @@ describe('DELETE /todo', () => {
     });
   });
 
-  xit('should return 400 if required fields are missing', async () => {
+  it('should return 400 if required fields are missing', async () => {
     const response: Response = await request(app).delete('/todo').send({});
     expect(response.status).toBe(HttpStatusCodes.BAD_REQUEST);
     expect(response.text).toBe('Missing required fields');

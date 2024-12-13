@@ -94,14 +94,14 @@ router.delete('/todo', (req, res): void => {
     return;
   }
 
-  fs.readFile(`./todo/${todoName}.json`, 'utf-8', (err, data) => {
+  fs.readFile(`./todo/${todoName}.json`, (err, data) => {
     if (err) {
       console.error(err);
       return res
         .status(HttpStatusCodes.INTERNAL_SERVER_ERROR)
         .send('Could not read the file content.');
     } else {
-      todos = JSON.parse(data);
+      todos = JSON.parse(Buffer.from(data).toString());
     }
 
     todos.tasks = todos.tasks.filter((t) => t.id !== id);

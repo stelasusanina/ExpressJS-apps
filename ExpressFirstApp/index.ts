@@ -31,7 +31,7 @@ app.use(todoRoutes);
 app.use((req, res) => {
   res
     .status(HttpStatusCodes.NOT_FOUND)
-    .sendFile('public/notFoundErrorPage.html', { root: __dirname });
+    .sendFile('/notFoundErrorPage.html', { root: staticDirectory });
 });
 
 //Function to start the server
